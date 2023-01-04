@@ -16,13 +16,16 @@ out_data = "Процент нарушений требований по разм
 
 link = 'https://map.obrnadzor.gov.ru/application/university'
 
+
+#parse universities' id
 def parser_vuz_id():
     driver = webdriver.Chrome()
     driver.get(link)
     button = driver.find_element_by_class_name("form_submit")
     button.click()
     ignored_exceptions=(NoSuchElementException,StaleElementReferenceException,)
-    with open('id.csv', 'w+') as file:
+    
+    with open('parser/data/id.csv', 'w+') as file:
 
         for i in range(686):
             WebDriverWait(driver, 100).until(EC.presence_of_element_located((By.TAG_NAME, 'tr')))
@@ -38,20 +41,14 @@ def parser_vuz_id():
     file.close()
 
 
-
-
+# parse site and save info into df
 def make_df(file_name):
     with open(file_name, 'r') as file:
         for line in file:
             id_vuz = line.split(';')
     if id_vuz[-1] == '':
         id_vuz.remove('')
-    #id_vuz = id_vuz[]
 
-    #id_vuz = id_vuz[:3000]
-    #id_vuz = id_vuz[3000:6000]
-    #id_vuz = id_vuz[6000:7000]
-    #id_vuz = id_vuz[7000 : -2]
 
     col = ['id', 'Название', 'Регион:', 'Населённый пункт:', 'Форма собственности:', 'Адрес:', 'Лицензия: №']
     df = pd.DataFrame(columns=col)
@@ -129,6 +126,7 @@ def make_df(file_name):
     return df
 
 
+#using the site's bug get codes of all specializations
 def get_codes(n):
     data = {'':''}
     url = 'https://map.obrnadzor.gov.ru/application/university/view/6721'
@@ -141,7 +139,7 @@ def get_codes(n):
     next_page.click()
 
     time.sleep(2)
-    print('hi')
+
     next_page = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'next')))
     next_page.click()
     time.sleep(2)
@@ -172,9 +170,11 @@ def get_codes(n):
 
     return data
 
+
+# save file with codes of all specializations
 def get_all_codes():
     d = get_codes(1337 - 75)
-    with open('text.txt', 'w') as file:
+    with open('parser/data/text.txt', 'w') as file:
         for key, value in d.items():
             if key != '':
                 file.write(f'{key}, {value}\n')

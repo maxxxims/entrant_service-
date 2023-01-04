@@ -1,5 +1,7 @@
 import pandas as pd
 
+#  Script from the server that stores the information
+#  entered by the user and selects recommendations
 
 class User():
     def __init__(self):
@@ -50,14 +52,13 @@ class User():
     def calculate_professions(self):
         result = []
 
-        with open('number-profession.txt', 'r', encoding='utf-8') as file:
+        with open('data_processing/data/number-profession.txt', 'r', encoding='utf-8') as file:
             table = {}
             file.read
             for line in file:
                 s = line[:-1].split(';')
                 table[s[0]] = [s[1], s[2]]
-                # if(s[1] == 'Математика и механика'):
-                #  table['01'] = 'Математика и механика'
+
 
         for number in parameters[self.interest]:
             result.append([number, table[number]])
@@ -138,6 +139,7 @@ class User():
         self.req = None
 
 
+# connection of specializations' codes and type of user
 parameters = {
     'exact': ['01', '02', '03', '05', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '20', '21', '22',
               '23', '24', '25', '26', '27', '28', '29', '56', '57', '38'],
@@ -146,6 +148,7 @@ parameters = {
     'creative': ['49', '50', '51', '52', '53', '54', '55']
 }
 
+# connection of specializations' codes and weights
 # ФИзика-мат-инф\Гуманитарное Биолог-Химия\ Творческое
 PROFESSIONS = {
     '01': [3, 0],

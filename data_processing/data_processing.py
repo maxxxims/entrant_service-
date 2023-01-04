@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 
+
+#save file with codes of specializations
 def work_with_file():
     df = pd.read_csv('result.csv')
     res = set()
@@ -13,12 +15,14 @@ def work_with_file():
     res = sorted(list(res))
     print(res)
 
-    with open('specializations2.csv', 'w') as file:
+    with open('data_processing/data/specializations2.csv', 'w') as file:
         file.write('\n')
         for el in res:
             file.write(el + '\n')
 
-# ФИзика-мат-инф\Гуманитарное Биолог-Химия\ Творческое
+
+# make weights of professions by code of specialization
+# ФИзика-мат-инф\Гуманитарное\ Биолог-Химия\ Творческое
 def profession(df):
     x_ax = [0] * 2447
     y_ax = [0] * 2447
@@ -36,6 +40,7 @@ def profession(df):
 
 
 if __name__ == '__main__':
+    # make column with code of professions 
     df = pd.read_csv('result.csv')
     new_colum = [''] * 2293
     for j in range(2293):
@@ -49,20 +54,24 @@ if __name__ == '__main__':
     all_texts = df.Prf.values.tolist()
     count_vect = CountVectorizer()
     matrix_count = count_vect.fit_transform(all_texts).toarray()
-    # print(matrix_count)
-    # print(len(df.specialization.values))
+
+    print(matrix_count)
+    print(len(df.specialization.values))
+
     words = [x[0] for x in sorted(count_vect.vocabulary_.items(), key=lambda x: x[1])]
     t = pd.DataFrame(matrix_count, columns=words)
     t2 = pd.concat([df, t], axis=1)
     t2.to_csv('vet-result.csv')
 
-    #df = profession(df)
-    #df.to_csv('result.csv')
+    df2 = profession(df)
+    df2.to_csv('data_processing/data/result.csv')
+
+    #plot MIPT universiti on the graph
     plt.scatter(df[df['id'] == 3302].X, df[df['id']== 3302].Y, s=10)
     plt.grid()
     plt.xlim([-3, 3])
     plt.ylim([-3, 3])
     plt.show()
-    plt.savefig('professions.png')
+    plt.savefig('data_processing/data/professions.png')
 
 
